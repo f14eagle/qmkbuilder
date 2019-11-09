@@ -17,5 +17,6 @@ module.exports = {
 	'alps44': 'Alps44',
 	'miuni32-rgb-standard': 'Miuni32 RGB (Standard)',
     'treasure-type9-default': 'Treasure Macropad Type-9',
-    'zlant-default': 'Zlant'
+	'zlant-default': 'Zlant',
+	'redox_w': 'Redox Wireless'
 };

@@ -39,7 +39,7 @@ app.post('/build', (req, res) => {
 	};
 
 	const sendError = err => {
-		console.log(err)
+		log.console(err)
 		res.json({ error: err });
 		clean();
 	};
