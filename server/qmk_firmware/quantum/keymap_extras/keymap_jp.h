@@ -1,4 +1,19 @@
-/* JP106-layout (Japanese Standard)
+/* Copyright 2016 h-youhei
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * JP106-layout (Japanese Standard)
  *
  * For more information, see
  * http://www2d.biglobe.ne.jp/~msyk/keyboard/layout/usbkeycode.html
@@ -24,6 +39,9 @@
 #define JP_MHEN KC_INT5 // muhenkan
 #define JP_HENK KC_INT4 // henkan
 #define JP_KANA KC_INT2 // katakana/hiragana|ro-mazi
+
+#define JP_MKANA KC_LANG1 //kana on MacOSX
+#define JP_MEISU KC_LANG2 //eisu on MacOSX
 
 
 //Aliases for shifted symbols

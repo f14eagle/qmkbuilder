@@ -1,7 +1,25 @@
+/* Copyright 2016 Jack Humbert
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef _API_H_
 #define _API_H_
 
+#ifdef __AVR__
 #include "lufa.h"
+#endif
 
 enum MESSAGE_TYPE {
     MT_GET_DATA =      0x10, // Get data from keyboard
@@ -12,7 +30,7 @@ enum MESSAGE_TYPE {
     MT_SEND_DATA_ACK = 0x31, // returned data/action confirmation (ACK)
     MT_EXE_ACTION =    0x40, // executing actions on keyboard
     MT_EXE_ACTION_ACK =0x41, // return confirmation/value (ACK)
-    MT_TYPE_ERROR =    0x80 // type not recofgnised (ACK)
+    MT_TYPE_ERROR =    0x80 // type not recognised (ACK)
 };
 
 enum DATA_TYPE {
