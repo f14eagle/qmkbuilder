@@ -3,6 +3,6 @@
 node_modules
 
 bundle.js
-local.json
+#local.json
 
 .idea

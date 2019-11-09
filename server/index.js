@@ -23,7 +23,7 @@ app.all('*', (req, res, next) => {
 	next();
 });
 
-app.use('/static', Express.static(path.resolve(__dirname, '../static')))
+app.use('/', Express.static(path.resolve(__dirname, '../static')))
 
 // Set up the /build route.
 app.post('/build', (req, res) => {
