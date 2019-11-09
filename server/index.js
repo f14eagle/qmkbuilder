@@ -9,6 +9,7 @@ const Fs = require('fs');
 const path = require('path')
 
 const co = require('co');
+const templateBasedir = path.resolve(__dirname, './keyboardTemplate')
 
 // Create the express app.
 const app = Express();
@@ -32,6 +33,10 @@ app.post('/build', (req, res) => {
 
 	// Create a random key.
 	const key = Crypto.randomBytes(16).toString('hex');
+	const templateName = files.templateName ? files.templateName : 'default'
+	const templateDir = path.resolve(templateBasedir, templateName)
+
+	console.log(`Build firmware with templateName: ${ templateName }`)
 
 	// Setup helper functions.
 	const clean = () => {
@@ -39,9 +44,9 @@ app.post('/build', (req, res) => {
 	};
 
 	const sendError = err => {
-		log.console(err)
+		console.log(err)
 		res.json({ error: err });
-		clean();
+		// clean();
 	};
 
 	// Start.
@@ -64,6 +69,23 @@ app.post('/build', (req, res) => {
 				});
 			});
 		}
+
+		// Copy template files if exists
+		yield new Promise((resolve, reject) => {
+			Fs.stat(templateDir, err => {
+				if(err){
+					console.log(`Template folder not exists: ${ templateDir }`)
+					resolve()
+				}else{
+					console.log(`Copy template files: ${ templateDir }`)
+					const targetDir = path.resolve(TMP + key, './keyboards/kb')
+					Exec('cp -rp ' + templateDir + '/* ' + targetDir + '/', (err, stdout, stderr) => {
+						if(err) return reject('Copy template files error')
+						resolve()
+					})
+				}
+			})
+		})
 
 		// Make.
 		yield new Promise((resolve, reject) => {

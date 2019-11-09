@@ -14,6 +14,7 @@ class Files {
 	 */
 	static generate(keyboard) {
 		return {
+			'templateName': keyboard.settings.templateName,
 			'qmk_firmware/keyboards/kb/rules.mk': new RulesMKGenerator(keyboard).generate(),
 			'qmk_firmware/keyboards/kb/config.h': new ConfigHGenerator(keyboard).generate(),
 			'qmk_firmware/keyboards/kb/kb.h': new KbHGenerator(keyboard).generate(),

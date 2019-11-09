@@ -40,7 +40,8 @@ class Keyboard {
 			name: '',
 			bootloaderSize: C.BOOTLOADER_4096,
 			rgbNum: 0,
-			backlightLevels: 3
+			backlightLevels: 3,
+			templateName: ''
 		};
 
 		this.valid = false;

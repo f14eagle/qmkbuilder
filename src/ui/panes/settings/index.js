@@ -77,6 +77,16 @@ class Settings extends React.Component {
 				Give your layout a name!
 			</Help>
 			<div style={{ height: '0.5rem' }}/>
+			<h2 style={{ width: '8rem', marginRight: '0.8rem' }}>Firmware Template</h2>
+			<input
+				style={{ width: '8rem' }}
+				type='text'
+				value={ keyboard.settings.templateName }
+				onChange={ e => keyboard.setSetting('templateName', e.target.value) }/>
+			<Help>
+				Give the firmware template name!
+			</Help>
+			<div style={{ height: '0.5rem' }}/>
 			<h2 style={{ width: '8rem', marginRight: '0.8rem' }}>Bootloader Size</h2>
 			<select
 				style={{ width: '8rem' }}
