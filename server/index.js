@@ -33,6 +33,7 @@ app.post('/build', (req, res) => {
 
 	// Create a random key.
 	const key = Crypto.randomBytes(16).toString('hex');
+	console.log(`Tmp folder: ${ TMP + key }`)
 	const templateName = files.templateName ? files.templateName : 'default'
 	const templateDir = path.resolve(templateBasedir, templateName)
 
@@ -107,7 +108,7 @@ app.post('/build', (req, res) => {
 		res.json({ hex: hex });
 
 		// Clean up.
-		clean();
+		// clean();
 	}).catch(e => sendError(e));
 });
 
