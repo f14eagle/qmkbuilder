@@ -6,6 +6,7 @@ const BodyParser = require('body-parser');
 const Crypto = require('crypto');
 const Exec = require('child_process').exec;
 const Fs = require('fs');
+const path = require('path')
 
 const co = require('co');
 
@@ -22,6 +23,8 @@ app.all('*', (req, res, next) => {
 	next();
 });
 
+app.use('/static', Express.static(path.resolve(__dirname, '../static')))
+
 // Set up the /build route.
 app.post('/build', (req, res) => {
 	// Get the files.
@@ -36,6 +39,7 @@ app.post('/build', (req, res) => {
 	};
 
 	const sendError = err => {
+		console.log(err)
 		res.json({ error: err });
 		clean();
 	};
