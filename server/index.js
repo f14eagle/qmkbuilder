@@ -14,9 +14,19 @@ const path = require('path')
 
 const co = require('co');
 
-const firmwareMapping = {
-	'default': 'default',
-	'redox': 'redox_f14'
+const firmwareSettings = {
+	'default': {
+		'name': 'default',
+		'hexName': ''
+	},
+	'redox': {
+		'name': 'redox_f14',
+		'hexName': 'redox_f14'
+	},
+	'corne': {
+		'name': 'crkbd',
+		'hexName': 'crkbd_rev1'
+	}
 }
 
 // Create the express app.
@@ -45,14 +55,15 @@ app.post('/build', (req, res) => {
 	const templateName = files.templateName ? files.templateName : 'default'
 	console.log(`Build firmware with templateName: ${ templateName }`)
 
-	const firmwareName = firmwareMapping[templateName]
+	const firmwareSetting = firmwareSettings[templateName]
+	const firmwareName = firmwareSetting ? firmwareSetting.name : 'default'
 	const keymapFolder = 'bft'
 	const targetKeymap = 'kb-' + key
 	const firmwareBasePath = path.resolve(QMK_PATH, './keyboards', firmwareName)
 	const keymapBasePath = path.resolve(firmwareBasePath, './keymaps')
 	const keymapPath = path.resolve(keymapBasePath, keymapFolder)
 	const targetPath = path.resolve(keymapBasePath, targetKeymap)
-	const hexfile = `${ QMK_PATH }/${ firmwareName }_${ targetKeymap }.hex`
+	const hexfile = `${ QMK_PATH }/${ firmwareSetting.hexName }_${ targetKeymap }.hex`
 
 	// Setup helper functions.
 	const clean = () => {
@@ -136,14 +147,27 @@ app.post('/build', (req, res) => {
 						return resolve()
 					}
 					const filename = targetPath + '/keymap.c'
-					const filecontent = files[file].replace('kb.h', `${ firmwareName }.h`)
-					Fs.writeFile(filename, filecontent, err => {
-						if (err){
+					// const filecontent = files[file].replace('kb.h', `${ firmwareName }.h`)
+					const filecontent = files[file]
+					const keymapContent = filecontent.substring(filecontent.indexOf('//--keymap-start'), filecontent.indexOf('//--keymap-end'))
+					.replace(/KEYMAP\(/g, 'LAYOUT(')
+
+					Fs.readFile(filename, { encoding: 'utf-8'}, (err, data) => {
+						if(err){
 							console.log(err)
-							return reject('Failed to write file from request')
-						} 
-						resolve();
-					});
+							return reject(`Read ${ filename } failed`)
+						}
+
+						const content = data.replace('%keymap%', keymapContent)
+						Fs.writeFile(filename, content, err => {
+							if (err){
+								console.log(err)
+								return reject('Failed to write file from request')
+							} 
+							resolve();
+						})
+					})
+
 				});
 			}
 
