@@ -1,6 +1,6 @@
 const PORT = 5004;
 const TMP = '/tmp/qmk-';
-const QMK_PATH = '/msys64/home/f14eagle/gitrepo/qmk_firmware_f14'
+const QMK_PATH = '/home/ubuntu/gitrepo/qmk_firmware_f14'
 
 const Express = require('express');
 const BodyParser = require('body-parser');

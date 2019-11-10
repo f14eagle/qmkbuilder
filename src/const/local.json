@@ -1,4 +1,4 @@
 {
-	"API": "http://localhost:5004/build/",
-	"PRESETS": "http://localhost:5004/presets/"
+	"API": "http://122.51.49.173:5004/build/",
+	"PRESETS": "http://122.51.49.173:5004/presets/"
 }
