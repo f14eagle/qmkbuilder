@@ -365,7 +365,7 @@ const keycodes = {
 	'LCAG()': new Keycode(new Template(['LCAG', 'KEY'], 'LCAG(%1)'), 'LCAG + %1', []),
 	'ALTG()': new Keycode(new Template(['ALTG', 'KEY'], 'ALTG(%1)'), 'ALTGR + %1', []),
 	'LT()': new Keycode(new Template(['LT', 'LAYER', 'KEY'], 'LT(%1, %2)'), 'LT(%1, %2)', []),
-	'LM()': new Keycode(new Template(['LM', 'LAYER', 'KEY'], 'LM(%1, %2)'), 'LM(%1, %2)', []),
+	'LM()': new Keycode(new Template(['LM', 'LAYER', 'MOD'], 'LM(%1, %2)'), 'LM(%1, %2)', []),
 	'TO()': new Keycode(new Template(['TO', 'LAYER'], 'TO(%1)'), 'TO(%1)', []),
 	'MO()': new Keycode(new Template(['MO', 'LAYER'], 'MO(%1)'), 'MO(%1)', []),
 	'DF()': new Keycode(new Template(['DF', 'LAYER'], 'DF(%1)'), 'DF(%1)', []),

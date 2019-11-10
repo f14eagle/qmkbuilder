@@ -10,7 +10,11 @@ const Fs = require('fs');
 const path = require('path')
 
 const co = require('co');
-const templateBasedir = path.resolve(__dirname, './keyboardTemplate')
+
+const firmwareMapping = {
+	'default': 'default',
+	'redox': 'redox_f14'
+}
 
 // Create the express app.
 const app = Express();
@@ -38,15 +42,27 @@ app.post('/build', (req, res) => {
 	const templateName = files.templateName ? files.templateName : 'default'
 	console.log(`Build firmware with templateName: ${ templateName }`)
 
+	const firmwareName = firmwareMapping[templateName]
+	const keymapFolder = 'bft'
+	const targetKeymap = 'kb-' + key
+	const firmwareBasePath = path.resolve(QMK_PATH, './keyboards', firmwareName)
+	const keymapBasePath = path.resolve(firmwareBasePath, './keymaps')
+	const keymapPath = path.resolve(keymapBasePath, keymapFolder)
+	const targetPath = path.resolve(keymapBasePath, targetKeymap)
+	const hexfile = `${ QMK_PATH }/${ firmwareName }_${ targetKeymap }.hex`
+
 	// Setup helper functions.
 	const clean = () => {
+		console.log('Clean up temp files...')
 		Exec('rm -rf ' + TMP + key);
+		Exec('rm -rf ' + targetPath);
+		Exec('rm -f ' + hexfile);
 	};
 
 	const sendError = err => {
 		console.log(err)
 		res.json({ error: err });
-		// clean();
+		clean();
 	};
 
 	// Start.
@@ -110,16 +126,10 @@ app.post('/build', (req, res) => {
 			res.json({ hex: hex });
 
 			// Clean up.
-			// clean();
+			clean();
 		}else{
 			// If user specified templateName, use qmk_firmware env to build
-			const firmwareName = 'redox_f14'
-			const keymapFolder = 'bft'
-			const targetKeymap = 'kb-' + key
-			const firmwareBasePath = path.resolve(QMK_PATH, './keyboards', firmwareName)
-			const keymapBasePath = path.resolve(firmwareBasePath, './keymaps')
-			const keymapPath = path.resolve(keymapBasePath, keymapFolder)
-			const targetPath = path.resolve(keymapBasePath, targetKeymap)
+			
 
 			// Copy the base stencil.
 			yield new Promise((resolve, reject) => {
@@ -164,7 +174,6 @@ app.post('/build', (req, res) => {
 
 			// Read the hex file.
 			const hex = yield new Promise((resolve, reject) => {
-				const hexfile = `${ QMK_PATH }/${ firmwareName }_${ targetKeymap }.hex`
 				console.log(`Read hex file: ${ hexfile }`)
 				Fs.readFile(hexfile, 'utf8', (err, data) => {
 					if (err){
@@ -177,6 +186,8 @@ app.post('/build', (req, res) => {
 
 			// Send the hex file.
 			res.json({ hex: hex });
+
+			clean()
 		}
 		
 	}).catch(e => sendError(e));
