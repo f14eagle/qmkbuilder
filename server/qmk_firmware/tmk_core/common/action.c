@@ -26,7 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "action_macro.h"
 #include "action_util.h"
 #include "action.h"
-#include "wait.h"
 
 #ifdef DEBUG_ACTION
 #include "debug.h"
@@ -34,62 +33,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "nodebug.h"
 #endif
 
-int tp_buttons;
 
-#ifdef RETRO_TAPPING
-int retro_tapping_counter = 0;
-#endif
-
-#ifdef FAUXCLICKY_ENABLE
-#include <fauxclicky.h>
-#endif
-
-#ifndef TAP_CODE_DELAY
-#  define TAP_CODE_DELAY 0
-#endif
-#ifndef TAP_HOLD_CAPS_DELAY
-#  define TAP_HOLD_CAPS_DELAY 80
-#endif
-/** \brief Called to execute an action.
- *
- * FIXME: Needs documentation.
- */
 void action_exec(keyevent_t event)
 {
     if (!IS_NOEVENT(event)) {
         dprint("\n---- action_exec: start -----\n");
         dprint("EVENT: "); debug_event(event); dprintln();
-#ifdef RETRO_TAPPING
-        retro_tapping_counter++;
-#endif
     }
 
-#ifdef FAUXCLICKY_ENABLE
-    if (IS_PRESSED(event)) {
-        FAUXCLICKY_ACTION_PRESS;
-    }
-    if (IS_RELEASED(event)) {
-        FAUXCLICKY_ACTION_RELEASE;
-    }
-    fauxclicky_check();
-#endif
-
-#ifdef SWAP_HANDS_ENABLE
+#ifdef ONEHAND_ENABLE
     if (!IS_NOEVENT(event)) {
         process_hand_swap(&event);
     }
 #endif
 
     keyrecord_t record = { .event = event };
-
-#if (defined(ONESHOT_TIMEOUT) && (ONESHOT_TIMEOUT > 0))
-    if (has_oneshot_layer_timed_out()) {
-        clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
-    }
-    if (has_oneshot_mods_timed_out()) {
-        clear_oneshot_mods();
-    }
-#endif
 
 #ifndef NO_ACTION_TAPPING
     action_tapping_process(record);
@@ -101,14 +59,9 @@ void action_exec(keyevent_t event)
 #endif
 }
 
-#ifdef SWAP_HANDS_ENABLE
+#ifdef ONEHAND_ENABLE
 bool swap_hands = false;
-bool swap_held = false;
 
-/** \brief Process Hand Swap
- *
- * FIXME: Needs documentation.
- */
 void process_hand_swap(keyevent_t *event) {
     static swap_state_row_t swap_state[MATRIX_ROWS];
 
@@ -126,7 +79,7 @@ void process_hand_swap(keyevent_t *event) {
 }
 #endif
 
-#if !defined(NO_ACTION_LAYER) && !defined(STRICT_LAYER_RELEASE)
+#if !defined(NO_ACTION_LAYER) && defined(PREVENT_STUCK_MODIFIERS)
 bool disable_action_cache = false;
 
 void process_record_nocache(keyrecord_t *record)
@@ -147,35 +100,7 @@ bool process_record_quantum(keyrecord_t *record) {
     return true;
 }
 
-#ifndef NO_ACTION_TAPPING
-/** \brief Allows for handling tap-hold actions immediately instead of waiting for TAPPING_TERM or another keypress.
- *
- * FIXME: Needs documentation.
- */
-void process_record_tap_hint(keyrecord_t *record)
-{
-    action_t action = layer_switch_get_action(record->event.key);
-
-    switch (action.kind.id) {
-#ifdef SWAP_HANDS_ENABLE
-        case ACT_SWAP_HANDS:
-            switch (action.swap.code) {
-                case OP_SH_TAP_TOGGLE:
-                default:
-                    swap_hands = !swap_hands;
-                    swap_held = true;
-            }
-            break;
-#endif
-    }
-}
-#endif
-
-/** \brief Take a key event (key press or key release) and processes it.
- *
- * FIXME: Needs documentation.
- */
-void process_record(keyrecord_t *record)
+void process_record(keyrecord_t *record) 
 {
     if (IS_NOEVENT(record->event)) { return; }
 
@@ -193,15 +118,19 @@ void process_record(keyrecord_t *record)
     process_action(record, action);
 }
 
-/** \brief Take an action and processes it.
- *
- * FIXME: Needs documentation.
- */
 void process_action(keyrecord_t *record, action_t action)
 {
+    bool do_release_oneshot = false;
     keyevent_t event = record->event;
 #ifndef NO_ACTION_TAPPING
     uint8_t tap_count = record->tap.count;
+#endif
+
+#if (defined(ONESHOT_TIMEOUT) && (ONESHOT_TIMEOUT > 0))
+    if (has_oneshot_layer_timed_out()) {
+        dprintf("Oneshot layer: timeout\n");
+        clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
+    }
 #endif
 
     if (event.pressed) {
@@ -210,7 +139,6 @@ void process_action(keyrecord_t *record, action_t action)
     }
 
 #ifndef NO_ACTION_ONESHOT
-    bool do_release_oneshot = false;
     // notice we only clear the one shot layer if the pressed key is not a modifier.
     if (is_oneshot_layer_active() && event.pressed && !IS_MOD(action.key.code)) {
         clear_oneshot_layer_state(ONESHOT_OTHER_KEY_PRESSED);
@@ -264,10 +192,10 @@ void process_action(keyrecord_t *record, action_t action)
                         if (event.pressed) {
                             if (tap_count == 0) {
                                 dprint("MODS_TAP: Oneshot: 0\n");
-                                register_mods(mods | get_oneshot_mods());
+                                register_mods(mods);
                             } else if (tap_count == 1) {
                                 dprint("MODS_TAP: Oneshot: start\n");
-                                set_oneshot_mods(mods | get_oneshot_mods());
+                                set_oneshot_mods(mods);
                     #if defined(ONESHOT_TAP_TOGGLE) && ONESHOT_TAP_TOGGLE > 1
                             } else if (tap_count == ONESHOT_TAP_TOGGLE) {
                                 dprint("MODS_TAP: Toggling oneshot");
@@ -276,7 +204,7 @@ void process_action(keyrecord_t *record, action_t action)
                                 register_mods(mods);
                     #endif
                             } else {
-                                register_mods(mods | get_oneshot_mods());
+                                register_mods(mods);
                             }
                         } else {
                             if (tap_count == 0) {
@@ -333,9 +261,6 @@ void process_action(keyrecord_t *record, action_t action)
                         } else {
                             if (tap_count > 0) {
                                 dprint("MODS_TAP: Tap: unregister_code\n");
-                                if (action.layer_tap.code == KC_CAPS) {
-                                  wait_ms(TAP_HOLD_CAPS_DELAY);
-                                }
                                 unregister_code(action.key.code);
                             } else {
                                 dprint("MODS_TAP: No tap: add_mods\n");
@@ -372,35 +297,9 @@ void process_action(keyrecord_t *record, action_t action)
         /* Mouse key */
         case ACT_MOUSEKEY:
             if (event.pressed) {
-                switch (action.key.code) {
-                    case KC_MS_BTN1:
-                        tp_buttons |= (1<<0);
-                        break;
-                    case KC_MS_BTN2:
-                        tp_buttons |= (1<<1);
-                        break;
-                    case KC_MS_BTN3:
-                        tp_buttons |= (1<<2);
-                        break;
-                    default:
-                        break;
-                }
                 mousekey_on(action.key.code);
                 mousekey_send();
             } else {
-                switch (action.key.code) {
-                    case KC_MS_BTN1:
-                        tp_buttons &= ~(1<<0);
-                        break;
-                    case KC_MS_BTN2:
-                        tp_buttons &= ~(1<<1);
-                        break;
-                    case KC_MS_BTN3:
-                        tp_buttons &= ~(1<<2);
-                        break;
-                    default:
-                        break;
-                }
                 mousekey_off(action.key.code);
                 mousekey_send();
             }
@@ -412,13 +311,13 @@ void process_action(keyrecord_t *record, action_t action)
                 /* Default Layer Bitwise Operation */
                 if (!event.pressed) {
                     uint8_t shift = action.layer_bitop.part*4;
-                    layer_state_t bits = ((layer_state_t)action.layer_bitop.bits)<<shift;
-                    layer_state_t mask = (action.layer_bitop.xbit) ? ~(((layer_state_t)0xf)<<shift) : 0;
+                    uint32_t bits = ((uint32_t)action.layer_bitop.bits)<<shift;
+                    uint32_t mask = (action.layer_bitop.xbit) ? ~(((uint32_t)0xf)<<shift) : 0;
                     switch (action.layer_bitop.op) {
                         case OP_BIT_AND: default_layer_and(bits | mask); break;
                         case OP_BIT_OR:  default_layer_or(bits | mask);  break;
                         case OP_BIT_XOR: default_layer_xor(bits | mask); break;
-                        case OP_BIT_SET: default_layer_set(bits | mask); break;
+                        case OP_BIT_SET: default_layer_and(mask); default_layer_or(bits); break;
                     }
                 }
             } else {
@@ -426,30 +325,31 @@ void process_action(keyrecord_t *record, action_t action)
                 if (event.pressed ? (action.layer_bitop.on & ON_PRESS) :
                                     (action.layer_bitop.on & ON_RELEASE)) {
                     uint8_t shift = action.layer_bitop.part*4;
-                    layer_state_t bits = ((layer_state_t)action.layer_bitop.bits)<<shift;
-                    layer_state_t mask = (action.layer_bitop.xbit) ? ~(((layer_state_t)0xf)<<shift) : 0;
+                    uint32_t bits = ((uint32_t)action.layer_bitop.bits)<<shift;
+                    uint32_t mask = (action.layer_bitop.xbit) ? ~(((uint32_t)0xf)<<shift) : 0;
                     switch (action.layer_bitop.op) {
                         case OP_BIT_AND: layer_and(bits | mask); break;
                         case OP_BIT_OR:  layer_or(bits | mask);  break;
                         case OP_BIT_XOR: layer_xor(bits | mask); break;
-                        case OP_BIT_SET: layer_state_set(bits | mask); break;
+                        case OP_BIT_SET: layer_and(mask); layer_or(bits); break;
                     }
                 }
-            }
-            break;
-        case ACT_LAYER_MODS:
-            if (event.pressed) {
-                layer_on(action.layer_mods.layer);
-                register_mods(action.layer_mods.mods);
-            } else {
-                unregister_mods(action.layer_mods.mods);
-                layer_off(action.layer_mods.layer);
             }
             break;
     #ifndef NO_ACTION_TAPPING
         case ACT_LAYER_TAP:
         case ACT_LAYER_TAP_EXT:
             switch (action.layer_tap.code) {
+                case 0xe0 ... 0xef:
+                    /* layer On/Off with modifiers(left only) */
+                    if (event.pressed) {
+                        layer_on(action.layer_tap.val);
+                        register_mods(action.layer_tap.code & 0x0f);
+                    } else {
+                        layer_off(action.layer_tap.val);
+                        unregister_mods(action.layer_tap.code & 0x0f);
+                    }
+                    break;
                 case OP_TAP_TOGGLE:
                     /* tap toggle */
                     if (event.pressed) {
@@ -525,11 +425,6 @@ void process_action(keyrecord_t *record, action_t action)
                     } else {
                         if (tap_count > 0) {
                             dprint("KEYMAP_TAP_KEY: Tap: unregister_code\n");
-                            if (action.layer_tap.code == KC_CAPS) {
-                                wait_ms(TAP_HOLD_CAPS_DELAY);
-                            } else {
-                                wait_ms(TAP_CODE_DELAY);
-                              }
                             unregister_code(action.layer_tap.code);
                         } else {
                             dprint("KEYMAP_TAP_KEY: No tap: Off on release\n");
@@ -547,7 +442,7 @@ void process_action(keyrecord_t *record, action_t action)
             action_macro_play(action_get_macro(record, action.func.id, action.func.opt));
             break;
 #endif
-#if defined(BACKLIGHT_ENABLE) | defined(LED_MATRIX_ENABLE)
+#ifdef BACKLIGHT_ENABLE
         case ACT_BACKLIGHT:
             if (!event.pressed) {
                 switch (action.backlight.opt) {
@@ -563,11 +458,8 @@ void process_action(keyrecord_t *record, action_t action)
                     case BACKLIGHT_STEP:
                         backlight_step();
                         break;
-                    case BACKLIGHT_ON:
-                        backlight_level(BACKLIGHT_LEVELS);
-                        break;
-                    case BACKLIGHT_OFF:
-                        backlight_level(0);
+                    case BACKLIGHT_LEVEL:
+                        backlight_level(action.backlight.level);
                         break;
                 }
             }
@@ -575,7 +467,7 @@ void process_action(keyrecord_t *record, action_t action)
 #endif
         case ACT_COMMAND:
             break;
-#ifdef SWAP_HANDS_ENABLE
+#ifdef ONEHAND_ENABLE
         case ACT_SWAP_HANDS:
             switch (action.swap.code) {
                 case OP_SH_TOGGLE:
@@ -602,38 +494,23 @@ void process_action(keyrecord_t *record, action_t action)
     #ifndef NO_ACTION_TAPPING
                 case OP_SH_TAP_TOGGLE:
                     /* tap toggle */
-
-                    if (event.pressed) {
-                        if (swap_held) {
-                            swap_held = false;
-                        } else {
+                    if (tap_count > 0) {
+                        if (!event.pressed) {
                             swap_hands = !swap_hands;
                         }
                     } else {
-                        if (tap_count < TAPPING_TOGGLE) {
-                            swap_hands = !swap_hands;
-                        }
+                        swap_hands = event.pressed;
                     }
                     break;
                 default:
-                    /* tap key */
                     if (tap_count > 0) {
-                        if (swap_held) {
-                            swap_hands = !swap_hands; // undo hold set up in _tap_hint
-                            swap_held = false;
-                        }
                         if (event.pressed) {
                             register_code(action.swap.code);
                         } else {
-                            wait_ms(TAP_CODE_DELAY);
                             unregister_code(action.swap.code);
-                            *record = (keyrecord_t){}; // hack: reset tap mode
                         }
                     } else {
-                        if (swap_held && !event.pressed) {
-                            swap_hands = !swap_hands; // undo hold set up in _tap_hint
-                            swap_held = false;
-                        }
+                        swap_hands = event.pressed;
                     }
     #endif
             }
@@ -646,47 +523,6 @@ void process_action(keyrecord_t *record, action_t action)
         default:
             break;
     }
-
-#ifndef NO_ACTION_LAYER
-    // if this event is a layer action, update the leds
-    switch (action.kind.id) {
-        case ACT_LAYER:
-        case ACT_LAYER_MODS:
-        #ifndef NO_ACTION_TAPPING
-        case ACT_LAYER_TAP:
-        case ACT_LAYER_TAP_EXT:
-        #endif
-            led_set(host_keyboard_leds());
-            break;
-        default:
-            break;
-    }
-#endif
-
-#ifndef NO_ACTION_TAPPING
-  #ifdef RETRO_TAPPING
-  if (!is_tap_action(action)) {
-    retro_tapping_counter = 0;
-  } else {
-    if (event.pressed) {
-        if (tap_count > 0) {
-          retro_tapping_counter = 0;
-        } else {
-
-        }
-    } else {
-      if (tap_count > 0) {
-        retro_tapping_counter = 0;
-      } else {
-        if (retro_tapping_counter == 2) {
-          tap_code(action.layer_tap.code);
-        }
-        retro_tapping_counter = 0;
-      }
-    }
-  }
-  #endif
-#endif
 
 #ifndef NO_ACTION_ONESHOT
     /* Because we switch layers after a oneshot event, we need to release the
@@ -704,9 +540,8 @@ void process_action(keyrecord_t *record, action_t action)
 
 
 
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
+/*
+ * Utilities for actions.
  */
 void register_code(uint8_t code)
 {
@@ -722,7 +557,6 @@ void register_code(uint8_t code)
 #endif
         add_key(KC_CAPSLOCK);
         send_keyboard_report();
-        wait_ms(100);
         del_key(KC_CAPSLOCK);
         send_keyboard_report();
     }
@@ -733,7 +567,6 @@ void register_code(uint8_t code)
 #endif
         add_key(KC_NUMLOCK);
         send_keyboard_report();
-        wait_ms(100);
         del_key(KC_NUMLOCK);
         send_keyboard_report();
     }
@@ -744,7 +577,6 @@ void register_code(uint8_t code)
 #endif
         add_key(KC_SCROLLLOCK);
         send_keyboard_report();
-        wait_ms(100);
         del_key(KC_SCROLLLOCK);
         send_keyboard_report();
     }
@@ -784,19 +616,8 @@ void register_code(uint8_t code)
     else if IS_CONSUMER(code) {
         host_consumer_send(KEYCODE2CONSUMER(code));
     }
-
-    #ifdef MOUSEKEY_ENABLE
-      else if IS_MOUSEKEY(code) {
-        mousekey_on(code);
-        mousekey_send();
-      }
-    #endif
 }
 
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
 void unregister_code(uint8_t code)
 {
     if (code == KC_NO) {
@@ -850,32 +671,8 @@ void unregister_code(uint8_t code)
     else if IS_CONSUMER(code) {
         host_consumer_send(0);
     }
-    #ifdef MOUSEKEY_ENABLE
-      else if IS_MOUSEKEY(code) {
-        mousekey_off(code);
-        mousekey_send();
-      }
-    #endif
 }
 
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
-void tap_code(uint8_t code) {
-  register_code(code);
-  if (code == KC_CAPS) {
-    wait_ms(TAP_HOLD_CAPS_DELAY);
-  } else {
-    wait_ms(TAP_CODE_DELAY);
-  }
-  unregister_code(code);
-}
-
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
 void register_mods(uint8_t mods)
 {
     if (mods) {
@@ -884,10 +681,6 @@ void register_mods(uint8_t mods)
     }
 }
 
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
 void unregister_mods(uint8_t mods)
 {
     if (mods) {
@@ -896,34 +689,17 @@ void unregister_mods(uint8_t mods)
     }
 }
 
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
 void clear_keyboard(void)
 {
     clear_mods();
     clear_keyboard_but_mods();
 }
 
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
 void clear_keyboard_but_mods(void)
-{
-    clear_keys();
-    clear_keyboard_but_mods_and_keys();
-}
-
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
-void clear_keyboard_but_mods_and_keys()
 {
     clear_weak_mods();
     clear_macro_mods();
+    clear_keys();
     send_keyboard_report();
 #ifdef MOUSEKEY_ENABLE
     mousekey_clear();
@@ -935,29 +711,17 @@ void clear_keyboard_but_mods_and_keys()
 #endif
 }
 
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
 bool is_tap_key(keypos_t key)
 {
     action_t action = layer_switch_get_action(key);
-    return is_tap_action(action);
-}
 
-/** \brief Utilities for actions. (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
-bool is_tap_action(action_t action)
-{
     switch (action.kind.id) {
         case ACT_LMODS_TAP:
         case ACT_RMODS_TAP:
         case ACT_LAYER_TAP:
         case ACT_LAYER_TAP_EXT:
             switch (action.layer_tap.code) {
-                case KC_NO ... KC_RGUI:
+                case 0x00 ... 0xdf:
                 case OP_TAP_TOGGLE:
                 case OP_ONESHOT:
                     return true;
@@ -965,7 +729,7 @@ bool is_tap_action(action_t action)
             return false;
         case ACT_SWAP_HANDS:
             switch (action.swap.code) {
-                case KC_NO ... KC_RGUI:
+                case 0x00 ... 0xdf:
                 case OP_SH_TAP_TOGGLE:
                     return true;
             }
@@ -979,19 +743,14 @@ bool is_tap_action(action_t action)
 }
 
 
-/** \brief Debug print (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
+/*
+ * debug print
  */
 void debug_event(keyevent_t event)
 {
     dprintf("%04X%c(%u)", (event.key.row<<8 | event.key.col), (event.pressed ? 'd' : 'u'), event.time);
 }
 
-/** \brief Debug print (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
 void debug_record(keyrecord_t record)
 {
     debug_event(record.event);
@@ -1000,10 +759,6 @@ void debug_record(keyrecord_t record)
 #endif
 }
 
-/** \brief Debug print (FIXME: Needs better description)
- *
- * FIXME: Needs documentation.
- */
 void debug_action(action_t action)
 {
     switch (action.kind.id) {
@@ -1014,7 +769,6 @@ void debug_action(action_t action)
         case ACT_USAGE:             dprint("ACT_USAGE");             break;
         case ACT_MOUSEKEY:          dprint("ACT_MOUSEKEY");          break;
         case ACT_LAYER:             dprint("ACT_LAYER");             break;
-        case ACT_LAYER_MODS:        dprint("ACT_LAYER_MODS");        break;
         case ACT_LAYER_TAP:         dprint("ACT_LAYER_TAP");         break;
         case ACT_LAYER_TAP_EXT:     dprint("ACT_LAYER_TAP_EXT");     break;
         case ACT_MACRO:             dprint("ACT_MACRO");             break;

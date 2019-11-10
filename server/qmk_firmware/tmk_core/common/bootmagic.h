@@ -2,8 +2,6 @@
 #define BOOTMAGIC_H
 
 
-/* FIXME: Add special doxygen comments for defines here. */
-
 /* bootmagic salt key */
 #ifndef BOOTMAGIC_KEY_SALT
 #define BOOTMAGIC_KEY_SALT              KC_SPACE

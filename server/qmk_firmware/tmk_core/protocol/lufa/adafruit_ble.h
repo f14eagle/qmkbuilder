@@ -3,13 +3,10 @@
  * Supports the Adafruit BLE board built around the nRF51822 chip.
  */
 #pragma once
-#ifdef MODULE_ADAFRUIT_BLE
+#ifdef ADAFRUIT_BLE_ENABLE
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-
-#include "config_common.h"
-#include "progmem.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,7 +43,7 @@ extern bool adafruit_ble_send_consumer_key(uint16_t keycode, int hold_duration);
  * The parameters are signed and indicate positive of negative direction
  * change. */
 extern bool adafruit_ble_send_mouse_move(int8_t x, int8_t y, int8_t scroll,
-                                         int8_t pan, uint8_t buttons);
+                                         int8_t pan);
 #endif
 
 /* Compute battery voltage by reading an analog pin.
@@ -60,4 +57,4 @@ extern bool adafruit_ble_set_power_level(int8_t level);
 }
 #endif
 
-#endif // MODULE_ADAFRUIT_BLE
+#endif // ADAFRUIT_BLE_ENABLE
