@@ -89,23 +89,6 @@ app.post('/build', (req, res) => {
 				});
 			}
 
-			// Copy template files if exists
-			yield new Promise((resolve, reject) => {
-				Fs.stat(templateDir, err => {
-					if(err){
-						console.log(`Template folder not exists: ${ templateDir }`)
-						resolve()
-					}else{
-						console.log(`Copy template files: ${ templateDir }`)
-						const targetDir = path.resolve(TMP + key, './keyboards/kb')
-						Exec('cp -rp ' + templateDir + '/* ' + targetDir + '/', (err, stdout, stderr) => {
-							if(err) return reject('Copy template files error')
-							resolve()
-						})
-					}
-				})
-			})
-
 			// Make.
 			yield new Promise((resolve, reject) => {
 				Exec('cd ' + TMP + key + '/keyboards/kb && make', (err, stdout, stderr) => {
