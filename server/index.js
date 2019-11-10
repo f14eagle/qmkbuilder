@@ -1,6 +1,9 @@
+const config = require('config')
+
 const PORT = 5004;
 const TMP = '/tmp/qmk-';
-const QMK_PATH = '/home/ubuntu/gitrepo/qmk_firmware_f14'
+//const QMK_PATH = '/home/ubuntu/gitrepo/qmk_firmware_f14'
+const QMK_PATH = config.get('QMK_PATH')
 
 const Express = require('express');
 const BodyParser = require('body-parser');
