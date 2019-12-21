@@ -41,7 +41,8 @@ class Keyboard {
 			bootloaderSize: C.BOOTLOADER_4096,
 			rgbNum: 0,
 			backlightLevels: 3,
-			templateName: ''
+			templateName: '',
+			fillEmptyKeys: ''
 		};
 
 		this.valid = false;

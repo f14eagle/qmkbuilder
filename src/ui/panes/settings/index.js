@@ -87,6 +87,16 @@ class Settings extends React.Component {
 				Give the firmware template name!
 			</Help>
 			<div style={{ height: '0.5rem' }}/>
+			<h2 style={{ width: '8rem', marginRight: '0.8rem' }}>Fill in Empty KeyCode</h2>
+			<input
+				style={{ width: '8rem' }}
+				type='text'
+				value={ keyboard.settings.fillEmptyKeys }
+				onChange={ e => keyboard.setSetting('fillEmptyKeys', e.target.value) }/>
+			<Help>
+				Fill in empty keycode when generating keymaps!
+			</Help>
+			<div style={{ height: '0.5rem' }}/>
 			<h2 style={{ width: '8rem', marginRight: '0.8rem' }}>Bootloader Size</h2>
 			<select
 				style={{ width: '8rem' }}

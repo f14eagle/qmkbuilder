@@ -8,7 +8,8 @@ class KeymapC extends Generator {
 
 	fillTemplate() {
 		const keyboard = this.keyboard;
-
+		const fillEmptyKeys = this.keyboard.settings.fillEmptyKeys
+		
 		// Generate the keymaps.
 		let keymaps = '';
 		for (let layer = 0; layer < C.KEYMAP_MAX_LAYERS; layer ++) {
@@ -16,9 +17,19 @@ class KeymapC extends Generator {
 			for (let row = 0; row < keyboard.rows; row ++) {
 				for (let col = 0; col < keyboard.cols; col ++) {
 					const key = keyboard.wiring[row + ',' + col];
-					if (!key || !key.length) continue;
+					//if (!key || !key.length) continue;
 
-					layerMap += key[0].keycodes[layer].getCode() + ', ';
+					//layerMap += key[0].keycodes[layer].getCode() + ', ';
+					if (!key || !key.length){
+						if(fillEmptyKeys){
+							// If key not exists in state, and fillEmptyKeys is not empty, add the key
+							layerMap += fillEmptyKeys + ', '
+						}else{
+							continue
+						}
+					}else{
+						layerMap += key[0].keycodes[layer].getCode() + ', ';
+					}
 				}
 				layerMap += '\n\t\t';
 			}
