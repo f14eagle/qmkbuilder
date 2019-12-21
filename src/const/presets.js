@@ -18,7 +18,8 @@ module.exports = {
 	// 'miuni32-rgb-standard': 'Miuni32 RGB (Standard)',
     // 'treasure-type9-default': 'Treasure Macropad Type-9',
 	// 'zlant-default': 'Zlant',
-	'wing57': 'Wing57',
+	'wing57': 'F14 - Wing57',
+	'wingxx': 'F14 - WingXX',
 	'redox_w': 'Redox Wireless',
 	'crkbd': 'Corne'
 };
