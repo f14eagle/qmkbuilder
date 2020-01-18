@@ -26,6 +26,10 @@ const firmwareSettings = {
 	'corne': {
 		'name': 'crkbd',
 		'hexName': 'crkbd_rev1'
+	},
+	'wingxx_plus': {
+		'name': 'wingxx_plus',
+		'hexName': 'wingxx_plus'
 	}
 }
 

@@ -20,6 +20,7 @@ module.exports = {
 	// 'zlant-default': 'Zlant',
 	'wing57': 'F14 - Wing57',
 	'wingxx': 'F14 - WingXX',
+	'wingxx-plus': 'F14 - WingXX Plus',
 	'redox_w': 'Redox Wireless',
 	'crkbd': 'Corne'
 };
