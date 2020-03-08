@@ -21,6 +21,7 @@ module.exports = {
 	'wing57': 'F14 - Wing57',
 	'wingxx': 'F14 - WingXX',
 	'wingxx_plus': 'F14 - WingXX Plus',
+	'v60': 'F14 - V60',
 	'redox_w': 'Redox Wireless',
 	'crkbd': 'Corne'
 };
