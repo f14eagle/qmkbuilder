@@ -31,6 +31,10 @@ const firmwareSettings = {
 		'name': 'wingxx_plus',
 		'hexName': 'wingxx_plus'
 	},
+	'wingxx_plus_wireless': {
+		'name': 'wingxxp_wireless',
+		'hexName': 'wingxxp_wireless'
+	},
 	'v60p': {
 		'name': 'v60p',
 		'hexName': 'v60p'
