@@ -24,6 +24,7 @@ module.exports = {
 	'wingxx_plus_wireless': 'F14 - WingXX Plus',
 	'v60': 'F14 - V60',
 	'v60p': 'F14 - V60 Plus',
+	'vxx_wired': 'F14 - VXX Wired',
 	'vxxp': 'F14 - VXX Plus',
 	'redox_w': 'Redox Wireless',
 	'crkbd': 'Corne'

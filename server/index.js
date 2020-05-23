@@ -43,6 +43,10 @@ const firmwareSettings = {
 		'name': 'v60',
 		'hexName': 'v60'
 	},
+	'vxx_wired': {
+		'name': 'vxx_wired',
+		'hexName': 'vxx_wired'
+	},
 	'vxxp': {
 		'name': 'vxxp',
 		'hexName': 'vxxp'
