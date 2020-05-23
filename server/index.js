@@ -183,8 +183,7 @@ app.post('/build', (req, res) => {
 							return reject(`Read ${ filename } failed`)
 						}
 
-						var content = data.replace('%keymap%', keymapContent)
-						content = data.replace('%macro%', macroContent)
+						var content = data.replace('%keymap%', keymapContent).replace('%macro%', macroContent)
 						Fs.writeFile(filename, content, err => {
 							if (err){
 								console.log(err)
