@@ -42,7 +42,11 @@ const firmwareSettings = {
 	'v60': {
 		'name': 'v60',
 		'hexName': 'v60'
-	}
+	},
+	'vxxp': {
+		'name': 'vxxp',
+		'hexName': 'vxxp'
+	},
 }
 
 // Create the express app.
