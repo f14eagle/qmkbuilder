@@ -175,6 +175,7 @@ app.post('/build', (req, res) => {
 					const filecontent = files[file]
 					const keymapContent = filecontent.substring(filecontent.indexOf('//--keymap-start'), filecontent.indexOf('//--keymap-end'))
 					.replace(/KEYMAP\(/g, 'LAYOUT(')
+					const macroContent = filecontent.substring(filecontent.indexOf('//--macro-start'), filecontent.indexOf('//--macro-end'))
 
 					Fs.readFile(filename, { encoding: 'utf-8'}, (err, data) => {
 						if(err){
@@ -182,7 +183,8 @@ app.post('/build', (req, res) => {
 							return reject(`Read ${ filename } failed`)
 						}
 
-						const content = data.replace('%keymap%', keymapContent)
+						var content = data.replace('%keymap%', keymapContent)
+						content = data.replace('%macro%', macroContent)
 						Fs.writeFile(filename, content, err => {
 							if (err){
 								console.log(err)
