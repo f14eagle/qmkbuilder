@@ -42,7 +42,8 @@ class Keyboard {
 			rgbNum: 0,
 			backlightLevels: 3,
 			templateName: '',
-			fillEmptyKeys: ''
+			fillEmptyKeys: '',
+			enableVia: false,
 		};
 
 		this.valid = false;

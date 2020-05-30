@@ -18,7 +18,7 @@ class ConfigH extends Generator {
 			'backlight_levels': keyboard.settings.backlightLevels,
 			'backlight_pin': keyboard.pins.led ? '#define BACKLIGHT_PIN ' + keyboard.pins.led : '',
 			'rgb_pin': keyboard.pins.rgb ? '#define RGB_DI_PIN ' + keyboard.pins.rgb : '',
-			'num_rgb': keyboard.settings.rgbNum
+			'num_rgb': keyboard.settings.rgbNum,
 		};
 	}
 

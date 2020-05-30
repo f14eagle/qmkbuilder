@@ -28,7 +28,8 @@ class RulesMK extends Generator {
 			'mcu': mcu,
 			'bootloader_size': bootloaderSize,
 			'use_backlight': keyboard.pins.led ? 'yes' : 'no',
-			'use_rgb': keyboard.pins.rgb ? 'yes' : 'no'
+			'use_rgb': keyboard.pins.rgb ? 'yes' : 'no',
+			'enable_via': keyboard.settings.enableVia ? 'yes' : 'no'
 		};
 	}
 
