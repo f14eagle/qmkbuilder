@@ -56,5 +56,6 @@ NKRO_ENABLE ?= yes		# USB Nkey Rollover - if this doesn't work, see here: https:
 BACKLIGHT_ENABLE ?= %use_backlight%  # Enable keyboard backlight functionality
 AUDIO_ENABLE ?= no
 RGBLIGHT_ENABLE ?= %use_rgb%
+ENABLE_VIA ?= %enable_via%
 
 `.trim();
