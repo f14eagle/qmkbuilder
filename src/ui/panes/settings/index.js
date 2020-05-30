@@ -98,13 +98,15 @@ class Settings extends React.Component {
 			</Help>
 			<div style={{ height: '0.5rem' }}/>
 			<h2 style={{ width: '8rem', marginRight: '0.8rem' }}>Enable VIA</h2>
-			<input
+			<select
 				style={{ width: '8rem' }}
-				type='checkbox'
-				checked={ keyboard.settings.enableVia }
-				onChange={ e => keyboard.setSetting('enableVia', e.target.checked) }/>
+				value={ keyboard.settings.enableVia ? 'true' : 'false' }
+				onChange={ e => keyboard.setSetting('enableVia', e.target.value == 'true') }>
+				<option value='false'>False</option>
+				<option value='true'>True</option>
+			</select>
 			<Help>
-				Fill in empty keycode when generating keymaps!
+				Enable VIA support!
 			</Help>
 			<div style={{ height: '0.5rem' }}/>
 			<h2 style={{ width: '8rem', marginRight: '0.8rem' }}>Bootloader Size</h2>
