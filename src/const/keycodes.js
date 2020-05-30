@@ -381,7 +381,31 @@ const keycodes = {
 	'MEH_T()': new Keycode(new Template(['MEH_T', 'KEY'], 'MEH_T(%1)'), 'MEH_T(%1)', []),
 	'LCAG_T()': new Keycode(new Template(['LCAG_T', 'KEY'], 'LCAG_T(%1)'), 'LCAG_T(%1)', []),
 	'ALL_T()': new Keycode(new Template(['ALL_T', 'KEY'], 'ALL_T(%1)'), 'ALL_T(%1)', []),
-	'M()': new Keycode(new Template(['M', 'MACRO'], 'M(%1)'), 'MACRO(%1)', [])
+	'M()': new Keycode(new Template(['M', 'MACRO'], 'M(%1)'), 'MACRO(%1)', []),
+
+	// New added keycodes
+	'KC_MFFD': new Keycode('KC_MFFD', 'MFFD', []),
+	'KC_MRWD': new Keycode('KC_MRWD', 'MRWD', []),
+	'KC_BRIU': new Keycode('KC_BRIU', 'BRIU', []),
+	'KC_BRID': new Keycode('KC_BRID', 'BRID', []),
+
+	'KC_MS_U': new Keycode('KC_MS_U', 'MS_U', []),
+	'KC_MS_D': new Keycode('KC_MS_D', 'MS_D', []),
+	'KC_MS_L': new Keycode('KC_MS_L', 'MS_L', []),
+	'KC_MS_R': new Keycode('KC_MS_R', 'MS_R', []),
+	'KC_BTN1': new Keycode('KC_BTN1', 'BTN1', []),
+	'KC_BTN2': new Keycode('KC_BTN2', 'BTN2', []),
+	'KC_BTN3': new Keycode('KC_BTN3', 'BTN3', []),
+	'KC_BTN4': new Keycode('KC_BTN4', 'BTN4', []),
+	'KC_BTN5': new Keycode('KC_BTN5', 'BTN5', []),
+	'KC_WH_U': new Keycode('KC_WH_U', 'WH_U', []),
+	'KC_WH_D': new Keycode('KC_WH_D', 'WH_D', []),
+	'KC_WH_L': new Keycode('KC_WH_L', 'WH_L', []),
+	'KC_WH_R': new Keycode('KC_WH_R', 'WH_R', []),
+	'KC_ACL0': new Keycode('KC_ACL0', 'ACL0', []),
+	'KC_ACL1': new Keycode('KC_ACL1', 'ACL1', []),
+	'KC_ACL2': new Keycode('KC_ACL2', 'ACL2', []),
+	
 };
 
 // Generate aliases.
@@ -435,7 +459,9 @@ const categories = {
 	'KEYPAD': [
 		'KC_NLCK', 'KC_PSLS', 'KC_PAST', 'KC_PMNS', 'KC_PPLS', 'KC_PDOT', 'KC_PEQL', 'KC_PENT', '',
 
-		'KC_P1', 'KC_P2', 'KC_P3', 'KC_P4', 'KC_P5', 'KC_P6', 'KC_P7', 'KC_P8', 'KC_P9', 'KC_P0'
+		'KC_P1', 'KC_P2', 'KC_P3', 'KC_P4', 'KC_P5', 'KC_P6', 'KC_P7', 'KC_P8', 'KC_P9', 'KC_P0', '',
+
+		'KC_MS_U', 'KC_MS_D', 'KC_MS_L', 'KC_MS_R', 'KC_BTN1', 'KC_BTN2', 'KC_BTN3', 'KC_BTN4', 'KC_BTN5', 'KC_WH_U', 'KC_WH_D', 'KC_WH_L', 'KC_WH_R', 'KC_ACL0', 'KC_ACL1', 'KC_ACL2'
 	],
 
 	'LIGHTING': [
