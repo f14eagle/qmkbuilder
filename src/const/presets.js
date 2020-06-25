@@ -26,6 +26,9 @@ module.exports = {
 	'v60p': 'F14 - V60 Plus',
 	'vxx_wired': 'F14 - VXX Wired',
 	'vxxp': 'F14 - VXX Plus',
+
+	'f14_ophelia': 'F14 Custom - Ophelia',
+
 	'redox_w': 'Redox Wireless',
 	'crkbd': 'Corne'
 };

@@ -51,6 +51,10 @@ const firmwareSettings = {
 		'name': 'vxxp',
 		'hexName': 'vxxp'
 	},
+	'f14_ophelia': {
+		'name': 'f14_ophelia',
+		'hexName': 'f14_ophelia'
+	},
 }
 
 // Create the express app.
