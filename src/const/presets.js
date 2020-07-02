@@ -26,6 +26,7 @@ module.exports = {
 	'v60p': 'F14 - V60 Plus',
 	'vxx_wired': 'F14 - VXX Wired',
 	'vxxp': 'F14 - VXX Plus',
+	'f14_u1800lite_wired': 'F14 - U1800Lite Wired',
 
 	'f14_ophelia': 'F14 Custom - Ophelia',
 
