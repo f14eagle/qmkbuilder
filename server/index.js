@@ -55,6 +55,10 @@ const firmwareSettings = {
 		'name': 'f14_u1800lite_wired',
 		'hexName': 'f14_u1800lite_wired'
 	},
+	'f14_u1800lite': {
+		'name': 'f14_u1800lite',
+		'hexName': 'f14_u1800lite'
+	},
 	'f14_ophelia': {
 		'name': 'f14_ophelia',
 		'hexName': 'f14_ophelia'
