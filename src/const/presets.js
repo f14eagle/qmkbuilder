@@ -22,6 +22,7 @@ module.exports = {
 	'wingxx': 'F14 - WingXX',
 	'wingxx_plus': 'F14 - WingXX Plus 0',
 	'wingxx_plus_wireless': 'F14 - WingXX Plus',
+	'wing68_plus': 'F14 - Wing68 Plus',
 	'v60': 'F14 - V60',
 	'v60p': 'F14 - V60 Plus',
 	'vxx_wired': 'F14 - VXX Wired',
