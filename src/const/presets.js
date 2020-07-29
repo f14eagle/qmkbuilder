@@ -31,6 +31,7 @@ module.exports = {
 	'f14_u1800lite': 'F14 - U1800Lite',
 
 	'f14_ophelia': 'F14 Custom - Ophelia',
+	'f14_ophelia_wired': 'F14 Custom - Ophelia Wired',
 
 	'redox_w': 'Redox Wireless',
 	'crkbd': 'Corne'
