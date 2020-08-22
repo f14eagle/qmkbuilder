@@ -187,31 +187,51 @@ app.post('/build', (req, res) => {
 			for (const file in files) {
 				yield new Promise((resolve, reject) => {
 					// Only process keymap file
-					if(!file.includes('keymap')){
+					const filecontent = files[file]
+					if(file.includes('keymap')){
+						var filename = targetPath + '/keymap.c'
+						// const filecontent = files[file].replace('kb.h', `${ firmwareName }.h`)
+						const keymapContent = filecontent.substring(filecontent.indexOf('//--keymap-start'), filecontent.indexOf('//--keymap-end'))
+						.replace(/KEYMAP\(/g, 'LAYOUT(')
+						const macroContent = filecontent.substring(filecontent.indexOf('//--macro-start'), filecontent.indexOf('//--macro-end'))
+
+						Fs.readFile(filename, { encoding: 'utf-8'}, (err, data) => {
+							if(err){
+								console.log(err)
+								return reject(`Read ${ filename } failed`)
+							}
+
+							var content = data.replace('%keymap%', keymapContent).replace('%macro%', macroContent)
+							Fs.writeFile(filename, content, err => {
+								if (err){
+									console.log(err)
+									return reject('Failed to write file from request')
+								} 
+								resolve();
+							})
+						})
+					}else if(file.includes('rules')){
+						var filename = targetPath + '/rules.mk'
+						const viaContent = filecontent.substring(filecontent.indexOf('//--via-start'), filecontent.indexOf('//--via-end'))
+
+						Fs.readFile(filename, { encoding: 'utf-8'}, (err, data) => {
+							if(err){
+								console.log(err)
+								return reject(`Read ${ filename } failed`)
+							}
+
+							var content = data.replace('%via%', viaContent)
+							Fs.writeFile(filename, content, err => {
+								if (err){
+									console.log(err)
+									return reject('Failed to write file from request')
+								} 
+								resolve();
+							})
+						})
+					}else{
 						return resolve()
 					}
-					const filename = targetPath + '/keymap.c'
-					// const filecontent = files[file].replace('kb.h', `${ firmwareName }.h`)
-					const filecontent = files[file]
-					const keymapContent = filecontent.substring(filecontent.indexOf('//--keymap-start'), filecontent.indexOf('//--keymap-end'))
-					.replace(/KEYMAP\(/g, 'LAYOUT(')
-					const macroContent = filecontent.substring(filecontent.indexOf('//--macro-start'), filecontent.indexOf('//--macro-end'))
-
-					Fs.readFile(filename, { encoding: 'utf-8'}, (err, data) => {
-						if(err){
-							console.log(err)
-							return reject(`Read ${ filename } failed`)
-						}
-
-						var content = data.replace('%keymap%', keymapContent).replace('%macro%', macroContent)
-						Fs.writeFile(filename, content, err => {
-							if (err){
-								console.log(err)
-								return reject('Failed to write file from request')
-							} 
-							resolve();
-						})
-					})
 
 				});
 			}
