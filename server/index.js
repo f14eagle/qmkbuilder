@@ -215,7 +215,7 @@ app.post('/build', (req, res) => {
 						if(!Fs.existsSync(filename)){
 							return resolve()
 						}
-						const viaContent = filecontent.substring(filecontent.indexOf('//--via-start'), filecontent.indexOf('//--via-end'))
+						const viaContent = filecontent.substring(filecontent.indexOf('//--via-start'), filecontent.indexOf('//--via-end')).replace('//','#')
 
 						Fs.readFile(filename, { encoding: 'utf-8'}, (err, data) => {
 							if(err){

@@ -57,7 +57,7 @@ BACKLIGHT_ENABLE ?= %use_backlight%  # Enable keyboard backlight functionality
 AUDIO_ENABLE ?= no
 RGBLIGHT_ENABLE ?= %use_rgb%
 //--via-start
-ENABLE_VIA ?= %enable_via%
+VIA_ENABLE ?= %enable_via%
 //--via-end
 
 `.trim();
