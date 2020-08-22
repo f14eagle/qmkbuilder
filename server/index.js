@@ -212,6 +212,9 @@ app.post('/build', (req, res) => {
 						})
 					}else if(file.includes('rules')){
 						var filename = targetPath + '/rules.mk'
+						if(!Fs.existsSync(filename)){
+							return resolve()
+						}
 						const viaContent = filecontent.substring(filecontent.indexOf('//--via-start'), filecontent.indexOf('//--via-end'))
 
 						Fs.readFile(filename, { encoding: 'utf-8'}, (err, data) => {
