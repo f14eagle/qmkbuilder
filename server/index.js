@@ -39,6 +39,10 @@ const firmwareSettings = {
 		'name': 'wing68_plus',
 		'hexName': 'wing68_plus'
 	},
+	'wing68_plus_v2': {
+		'name': 'wing68_plus',
+		'hexName': 'wing68_plus'
+	},
 	'v60p': {
 		'name': 'v60p',
 		'hexName': 'v60p'
