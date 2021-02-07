@@ -75,6 +75,10 @@ const firmwareSettings = {
 		'name': 'f14_ophelia_wired',
 		'hexName': 'f14_ophelia_wired'
 	},
+	'ophelia-v2': {
+		'name': 'ophelia-v2',
+		'hexName': 'ophelia-v2'
+	},
 }
 
 // Create the express app.
