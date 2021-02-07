@@ -33,7 +33,7 @@ module.exports = {
 
 	'f14_ophelia': 'F14 Custom - Ophelia',
 	'f14_ophelia_wired': 'F14 Custom - Ophelia Wired',
-	'ophelia-v2': 'F14 Custom - Ophelia V2',
+	'ophelia_v2': 'F14 Custom - Ophelia V2',
 
 	'redox_w': 'Redox Wireless',
 	'crkbd': 'Corne'
