@@ -79,6 +79,10 @@ const firmwareSettings = {
 		'name': 'ophelia_v2',
 		'hexName': 'ophelia_v2'
 	},
+	'ophe_14': {
+		'name': 'ophe_14',
+		'hexName': 'ophe_14'
+	},
 }
 
 // Create the express app.

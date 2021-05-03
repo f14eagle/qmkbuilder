@@ -36,5 +36,6 @@ module.exports = {
 	'ophelia_v2': 'F14 Custom - Ophelia V2',
 
 	'redox_w': 'Redox Wireless',
-	'crkbd': 'Corne'
+	'crkbd': 'Corne',
+	'ophe_14': 'Ophe14 Test',
 };
